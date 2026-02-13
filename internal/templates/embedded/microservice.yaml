@@ -1,0 +1,65 @@
+name: microservice
+description: Microservice architecture with API gateway and services
+category: Microservices
+services:
+  - name: api-gateway
+    type: gateway
+    description: API Gateway/Load Balancer
+    image: nginx:alpine
+    ports:
+      - container: 80
+        protocol: tcp
+    environment:
+      UPSTREAM_SERVICE1: service1:8081
+      UPSTREAM_SERVICE2: service2:8082
+    optional: false
+
+  - name: service1
+    type: microservice
+    description: First microservice
+    image: node:18-alpine
+    ports:
+      - container: 8081
+        protocol: tcp
+    environment:
+      SERVICE_NAME: service1
+      DB_HOST: redis
+    depends_on:
+      - redis
+    optional: false
+
+  - name: service2
+    type: microservice
+    description: Second microservice
+    image: python:3.11-slim
+    ports:
+      - container: 8082
+        protocol: tcp
+    environment:
+      SERVICE_NAME: service2
+      DB_HOST: redis
+    depends_on:
+      - redis
+    optional: false
+
+  - name: redis
+    type: cache
+    description: Redis cache
+    image: redis:7-alpine
+    ports:
+      - container: 6379
+        protocol: tcp
+    volumes:
+      - source: redis_data
+        target: /data
+        type: volume
+    optional: false
+
+variables:
+  REDIS_PASSWORD: "change-me"
+  GATEWAY_CONFIG: "/etc/nginx/nginx.conf"
+tags:
+  - microservice
+  - api
+  - gateway
+  - redis

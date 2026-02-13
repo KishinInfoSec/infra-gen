@@ -1,0 +1,65 @@
+name: database
+description: Database services (PostgreSQL, MySQL, MongoDB)
+category: Databases
+services:
+  - name: postgres
+    type: database
+    description: PostgreSQL database server
+    image: postgres:15
+    ports:
+      - container: 5432
+        protocol: tcp
+    volumes:
+      - source: postgres_data
+        target: /var/lib/postgresql/data
+        type: volume
+    environment:
+      POSTGRES_DB: myapp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    optional: false
+
+  - name: mysql
+    type: database
+    description: MySQL database server
+    image: mysql:8.0
+    ports:
+      - container: 3306
+        protocol: tcp
+    volumes:
+      - source: mysql_data
+        target: /var/lib/mysql
+        type: volume
+    environment:
+      MYSQL_DATABASE: myapp
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    optional: true
+
+  - name: mongodb
+    type: database
+    description: MongoDB database server
+    image: mongo:7
+    ports:
+      - container: 27017
+        protocol: tcp
+    volumes:
+      - source: mongodb_data
+        target: /data/db
+        type: volume
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    optional: true
+
+variables:
+  POSTGRES_PASSWORD: "secure-postgres-pass"
+  MYSQL_PASSWORD: "secure-mysql-pass"
+  MYSQL_ROOT_PASSWORD: "secure-root-pass"
+  MONGO_PASSWORD: "secure-mongo-pass"
+tags:
+  - database
+  - postgres
+  - mysql
+  - mongodb

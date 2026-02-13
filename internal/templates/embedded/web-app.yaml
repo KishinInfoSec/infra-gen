@@ -1,0 +1,56 @@
+name: web-app
+description: Basic web application with frontend, backend, and database
+category: Web Applications
+services:
+  - name: frontend
+    type: frontend
+    description: Frontend web application (React/Vue/Angular)
+    image: nginx:alpine
+    ports:
+      - container: 80
+        protocol: tcp
+    environment:
+      REACT_APP_API_URL: http://api:8080
+    optional: false
+
+  - name: api
+    type: api
+    description: Backend API server
+    image: node:18-alpine
+    ports:
+      - container: 8080
+        protocol: tcp
+    environment:
+      NODE_ENV: development
+      DB_HOST: database
+      DB_PORT: "5432"
+      DB_NAME: webapp
+    depends_on:
+      - database
+    optional: false
+
+  - name: database
+    type: database
+    description: PostgreSQL database
+    image: postgres:15
+    ports:
+      - container: 5432
+        protocol: tcp
+    volumes:
+      - source: db_data
+        target: /var/lib/postgresql/data
+        type: volume
+    environment:
+      POSTGRES_DB: webapp
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    optional: false
+
+variables:
+  DB_PASSWORD: "change-me"
+  REACT_APP_API_URL: "http://localhost:8080"
+tags:
+  - web
+  - frontend
+  - backend
+  - database

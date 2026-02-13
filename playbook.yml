@@ -1,0 +1,54 @@
+---
+- hosts: all
+  become: true
+  name: Deploy test-project
+  vars:
+    database_volumes: [db_data:/var/lib/postgresql/data]
+    database_enabled: true
+    frontend_ports: [80]
+    frontend_enabled: true
+    api_image: node:18-alpine
+    api_ports: [8080]
+    api_volumes: []
+    api_enabled: true
+    database_image: postgres:15
+    database_ports: [5432]
+    frontend_image: nginx:alpine
+    frontend_volumes: []
+  tasks:
+    - name: Update package cache
+      apt:
+        name: apt
+        state: present
+    - name: Install Docker
+      package:
+        name: docker.io
+        state: present
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        state: started
+    - name: Pull frontend Docker image
+      docker_image:
+        name: nginx:alpine
+        state: present
+    - name: Pull api Docker image
+      docker_image:
+        name: node:18-alpine
+        state: present
+    - name: Create directory for db_data volume
+      file:
+        name: db_data
+        state: directory
+    - name: Pull database Docker image
+      docker_image:
+        name: postgres:15
+        state: present
+    - name: Create docker-compose.yml
+      file:
+        name: /opt/{{ project_name }}/docker-compose.yml
+        state: directory
+    - name: Deploy services with Docker Compose
+      docker_compose:
+        name: /opt/{{ project_name }}
+        state: present

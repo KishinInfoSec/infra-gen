@@ -1,0 +1,48 @@
+name: my-web-app
+type: web-app
+description: Basic web application with frontend, backend, and database
+environment: development
+version: "1.0.0"
+services:
+  - name: frontend
+    type: frontend
+    image: nginx:alpine
+    ports:
+      - container: 80
+        protocol: tcp
+    environment:
+      REACT_APP_API_URL: http://api:8080
+    enabled: true
+  - name: api
+    type: api
+    image: node:18-alpine
+    ports:
+      - container: 8080
+        protocol: tcp
+    environment:
+      NODE_ENV: development
+      DB_HOST: database
+      DB_PORT: "5432"
+      DB_NAME: webapp
+    depends_on:
+      - database
+    enabled: true
+  - name: database
+    type: database
+    image: postgres:15
+    ports:
+      - container: 5432
+        protocol: tcp
+    volumes:
+      - source: db_data
+        target: /var/lib/postgresql/data
+        type: volume
+    environment:
+      POSTGRES_DB: webapp
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    enabled: true
+variables:
+  DB_PASSWORD: "secure-password"
+created_at: "2024-01-01T00:00:00Z"
+updated_at: "2024-01-01T00:00:00Z"

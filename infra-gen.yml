@@ -1,0 +1,41 @@
+name: test-project
+type: web-app
+description: Basic web application with frontend, backend, and database
+version: 1.0.0
+environment: development
+services:
+    - name: frontend
+      type: frontend
+      image: nginx:alpine
+      ports:
+        - container: 80
+          protocol: tcp
+      environment:
+        REACT_APP_API_URL: http://api:8080
+      enabled: true
+    - name: api
+      type: api
+      image: node:18-alpine
+      ports:
+        - container: 8080
+          protocol: tcp
+      environment:
+        DB_HOST: database
+        NODE_ENV: development
+      enabled: true
+    - name: database
+      type: database
+      image: postgres:15
+      ports:
+        - container: 5432
+          protocol: tcp
+      volumes:
+        - source: db_data
+          target: /var/lib/postgresql/data
+          type: volume
+      environment:
+        POSTGRES_DB: webapp
+        POSTGRES_USER: admin
+      enabled: true
+created_at: 2026-02-11T20:53:20.911306675Z
+updated_at: 2026-02-11T20:53:20.911306847Z
