@@ -6,7 +6,7 @@ import (
 	"io/fs"
 	"strings"
 
-	"github.com/infra-gen/infra-gen/pkg/types"
+	"github.com/kishininfosec/infra-gen/infra-gen/pkg/types"
 )
 
 //go:embed embedded/*.yaml
@@ -24,13 +24,13 @@ func NewTemplateManager() *TemplateManager {
 		embedded: make(map[string]types.Preset),
 		custom:   make(map[string]types.Preset),
 	}
-	
+
 	// Load embedded templates
 	if err := tm.loadEmbeddedTemplates(); err != nil {
 		// Log error but continue with empty templates
 		fmt.Printf("Warning: Failed to load embedded templates: %v\n", err)
 	}
-	
+
 	return tm
 }
 
@@ -40,11 +40,11 @@ func (tm *TemplateManager) loadEmbeddedTemplates() error {
 		if err != nil {
 			return err
 		}
-		
+
 		if d.IsDir() || !strings.HasSuffix(path, ".yaml") {
 			return nil
 		}
-		
+
 		// Parse YAML content to get preset
 		// For now, we'll create simple presets
 		preset := types.Preset{
@@ -53,7 +53,7 @@ func (tm *TemplateManager) loadEmbeddedTemplates() error {
 			Description: tm.generatePresetDescription(d.Name()),
 			Category:    tm.getCategoryFromPath(path),
 		}
-		
+
 		tm.embedded[preset.ID] = preset
 		return nil
 	})
@@ -64,45 +64,45 @@ func (tm *TemplateManager) GetPreset(id string) (*types.Preset, error) {
 	if preset, exists := tm.embedded[id]; exists {
 		return &preset, nil
 	}
-	
+
 	if preset, exists := tm.custom[id]; exists {
 		return &preset, nil
 	}
-	
+
 	return nil, fmt.Errorf("preset '%s' not found", id)
 }
 
 // ListPresets returns all available presets
 func (tm *TemplateManager) ListPresets() []types.Preset {
 	var presets []types.Preset
-	
+
 	for _, preset := range tm.embedded {
 		presets = append(presets, preset)
 	}
-	
+
 	for _, preset := range tm.custom {
 		presets = append(presets, preset)
 	}
-	
+
 	return presets
 }
 
 // ListPresetsByCategory returns presets filtered by category
 func (tm *TemplateManager) ListPresetsByCategory(category string) []types.Preset {
 	var presets []types.Preset
-	
+
 	for _, preset := range tm.embedded {
 		if preset.Category == category {
 			presets = append(presets, preset)
 		}
 	}
-	
+
 	for _, preset := range tm.custom {
 		if preset.Category == category {
 			presets = append(presets, preset)
 		}
 	}
-	
+
 	return presets
 }
 
@@ -118,30 +118,30 @@ func (tm *TemplateManager) generatePresetName(filename string) string {
 	name := strings.TrimSuffix(filename, ".yaml")
 	name = strings.ReplaceAll(name, "-", " ")
 	name = strings.ReplaceAll(name, "_", " ")
-	
+
 	// Capitalize first letter
 	if len(name) > 0 {
 		name = strings.ToUpper(name[:1]) + name[1:]
 	}
-	
+
 	return name
 }
 
 func (tm *TemplateManager) generatePresetDescription(filename string) string {
 	base := strings.TrimSuffix(filename, ".yaml")
-	
+
 	descriptions := map[string]string{
-		"web-app":       "Basic web application with frontend, backend, and database",
-		"microservice":  "Microservice architecture with API gateway and services",
-		"database":      "Database services (PostgreSQL, MySQL, MongoDB)",
-		"ml":            "Machine learning pipeline with model serving",
+		"web-app":        "Basic web application with frontend, backend, and database",
+		"microservice":   "Microservice architecture with API gateway and services",
+		"database":       "Database services (PostgreSQL, MySQL, MongoDB)",
+		"ml":             "Machine learning pipeline with model serving",
 		"infrastructure": "Core infrastructure components (monitoring, logging)",
 	}
-	
+
 	if desc, exists := descriptions[base]; exists {
 		return desc
 	}
-	
+
 	return fmt.Sprintf("%s project template", base)
 }
 
@@ -157,6 +157,6 @@ func (tm *TemplateManager) getCategoryFromPath(path string) string {
 	} else if strings.Contains(path, "infrastructure") {
 		return "Infrastructure"
 	}
-	
+
 	return "General"
 }

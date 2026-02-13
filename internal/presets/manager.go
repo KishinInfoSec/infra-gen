@@ -5,9 +5,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/kishininfosec/infra-gen/infra-gen/internal/templates"
+	"github.com/kishininfosec/infra-gen/infra-gen/pkg/types"
 	"gopkg.in/yaml.v3"
-	"github.com/infra-gen/infra-gen/internal/templates"
-	"github.com/infra-gen/infra-gen/pkg/types"
 )
 
 // Manager manages project presets

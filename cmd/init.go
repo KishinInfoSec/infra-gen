@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/kishininfosec/infra-gen/infra-gen/internal/presets"
 	"github.com/spf13/cobra"
-	"github.com/infra-gen/infra-gen/internal/presets"
 )
 
 // initCmd represents the init command

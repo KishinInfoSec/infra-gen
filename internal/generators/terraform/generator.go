@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/infra-gen/infra-gen/pkg/types"
+	"github.com/kishininfosec/infra-gen/infra-gen/pkg/types"
 )
 
 // Generator implements Terraform HCL generation using only standard library

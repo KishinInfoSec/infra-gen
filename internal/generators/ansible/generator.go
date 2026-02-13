@@ -4,28 +4,28 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/kishininfosec/infra-gen/infra-gen/pkg/types"
 	"gopkg.in/yaml.v3"
-	"github.com/infra-gen/infra-gen/pkg/types"
 )
 
 // AnsiblePlaybook represents an Ansible playbook structure
 type AnsiblePlaybook struct {
-	Hosts       string                   `yaml:"hosts"`
-	Name        string                   `yaml:"name"`
-	Become      bool                     `yaml:"become,omitempty"`
-	Vars        map[string]interface{}   `yaml:"vars,omitempty"`
-	Environment map[string]interface{}   `yaml:"environment,omitempty"`
-	Tasks       []AnsibleTask            `yaml:"tasks"`
+	Hosts       string                 `yaml:"hosts"`
+	Name        string                 `yaml:"name"`
+	Become      bool                   `yaml:"become,omitempty"`
+	Vars        map[string]interface{} `yaml:"vars,omitempty"`
+	Environment map[string]interface{} `yaml:"environment,omitempty"`
+	Tasks       []AnsibleTask          `yaml:"tasks"`
 }
 
 // AnsibleTask represents an Ansible task
 type AnsibleTask struct {
-	Name    string                 `yaml:"name"`
-	Module  string                 `yaml:"module,omitempty"`
-	Package string                 `yaml:"name,omitempty"`
-	State   string                 `yaml:"state,omitempty"`
-	WithItems []interface{}       `yaml:"with_items,omitempty"`
-	Vars    map[string]interface{} `yaml:"vars,omitempty"`
+	Name      string                 `yaml:"name"`
+	Module    string                 `yaml:"module,omitempty"`
+	Package   string                 `yaml:"name,omitempty"`
+	State     string                 `yaml:"state,omitempty"`
+	WithItems []interface{}          `yaml:"with_items,omitempty"`
+	Vars      map[string]interface{} `yaml:"vars,omitempty"`
 }
 
 // AnsibleInventory represents an Ansible inventory structure
@@ -131,14 +131,14 @@ func (g *Generator) Validate(config *types.ProjectConfig) error {
 // generatePlaybook generates the main Ansible playbook
 func (g *Generator) generatePlaybook(config *types.ProjectConfig) (string, error) {
 	var builder strings.Builder
-	
+
 	builder.WriteString("---\n")
 	builder.WriteString("- hosts: all\n")
 	builder.WriteString("  become: true\n")
 	builder.WriteString("  name: Deploy ")
 	builder.WriteString(config.Name)
 	builder.WriteString("\n")
-	
+
 	// Generate vars
 	vars := g.generateVars(config)
 	if len(vars) > 0 {
@@ -151,7 +151,7 @@ func (g *Generator) generatePlaybook(config *types.ProjectConfig) (string, error
 			builder.WriteString("\n")
 		}
 	}
-	
+
 	// Generate tasks
 	tasks := g.generateTasks(config)
 	builder.WriteString("  tasks:\n")
@@ -182,7 +182,7 @@ func (g *Generator) generatePlaybook(config *types.ProjectConfig) (string, error
 // generateVars generates variables for the playbook
 func (g *Generator) generateVars(config *types.ProjectConfig) map[string]interface{} {
 	vars := make(map[string]interface{})
-	
+
 	// Add project-level variables
 	for key, value := range config.Variables {
 		vars[key] = value
@@ -206,22 +206,22 @@ func (g *Generator) generateTasks(config *types.ProjectConfig) []AnsibleTask {
 
 	// Add common setup tasks
 	tasks = append(tasks, AnsibleTask{
-		Name: "Update package cache",
-		Module: "apt",
+		Name:    "Update package cache",
+		Module:  "apt",
 		Package: "apt",
 		State:   "present",
 	})
 
 	tasks = append(tasks, AnsibleTask{
-		Name: "Install Docker",
-		Module: "package",
+		Name:    "Install Docker",
+		Module:  "package",
 		Package: "docker.io",
 		State:   "present",
 	})
 
 	tasks = append(tasks, AnsibleTask{
-		Name: "Start and enable Docker service",
-		Module: "systemd",
+		Name:    "Start and enable Docker service",
+		Module:  "systemd",
 		Package: "docker",
 		State:   "started",
 	})

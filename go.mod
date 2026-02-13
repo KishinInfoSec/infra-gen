@@ -1,4 +1,4 @@
-module github.com/infra-gen/infra-gen
+module github.com/kishininfosec/infra-gen/infra-gen
 
 go 1.23.0
 

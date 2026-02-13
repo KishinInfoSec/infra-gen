@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/kishininfosec/infra-gen/infra-gen/internal/presets"
+	"github.com/kishininfosec/infra-gen/infra-gen/pkg/types"
 	"github.com/spf13/cobra"
-	"github.com/infra-gen/infra-gen/internal/presets"
-	"github.com/infra-gen/infra-gen/pkg/types"
 )
 
 // listCmd represents the list command
@@ -41,7 +41,7 @@ or 'project' to see current project details.`,
 
 func listPresets(presetManager *presets.Manager) {
 	presets := presetManager.ListPresets()
-	
+
 	if len(presets) == 0 {
 		fmt.Println("No presets available")
 		return
@@ -49,7 +49,7 @@ func listPresets(presetManager *presets.Manager) {
 
 	fmt.Println("Available Project Presets:")
 	fmt.Println(strings.Repeat("=", 50))
-	
+
 	categories := make(map[string][]types.Preset)
 	for _, preset := range presets {
 		categories[preset.Category] = append(categories[preset.Category], preset)
@@ -64,13 +64,13 @@ func listPresets(presetManager *presets.Manager) {
 			}
 		}
 	}
-	
+
 	fmt.Printf("\nTotal: %d presets across %d categories\n", len(presets), len(categories))
 }
 
 func listCategories(presetManager *presets.Manager) {
 	presets := presetManager.ListPresets()
-	
+
 	if len(presets) == 0 {
 		fmt.Println("No presets available")
 		return
@@ -83,17 +83,17 @@ func listCategories(presetManager *presets.Manager) {
 
 	fmt.Println("Available Categories:")
 	fmt.Println(strings.Repeat("=", 30))
-	
+
 	for category, count := range categories {
 		fmt.Printf("  %-20s (%d presets)\n", category, count)
 	}
-	
+
 	fmt.Printf("\nTotal: %d categories\n", len(categories))
 }
 
 func listProject(cmd *cobra.Command) {
 	configFile, _ := cmd.Flags().GetString("config")
-	
+
 	presetManager := presets.NewManager()
 	config, err := presetManager.LoadProject(configFile)
 	if err != nil {
@@ -110,7 +110,7 @@ func listProject(cmd *cobra.Command) {
 	fmt.Printf("Version:     %s\n", config.Version)
 	fmt.Printf("Created:     %s\n", config.CreatedAt.Format("2006-01-02 15:04:05"))
 	fmt.Printf("Updated:     %s\n", config.UpdatedAt.Format("2006-01-02 15:04:05"))
-	
+
 	if len(config.Services) > 0 {
 		fmt.Printf("\nServices (%d):\n", len(config.Services))
 		for _, service := range config.Services {
@@ -121,7 +121,7 @@ func listProject(cmd *cobra.Command) {
 			fmt.Printf("  %s %-15s (%s)\n", status, service.Name, service.Type)
 		}
 	}
-	
+
 	if len(config.Variables) > 0 {
 		fmt.Printf("\nVariables (%d):\n", len(config.Variables))
 		for key, value := range config.Variables {

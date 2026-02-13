@@ -5,12 +5,12 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/kishininfosec/infra-gen/infra-gen/internal/generators/ansible"
+	"github.com/kishininfosec/infra-gen/infra-gen/internal/generators/docker"
+	"github.com/kishininfosec/infra-gen/infra-gen/internal/generators/terraform"
+	"github.com/kishininfosec/infra-gen/infra-gen/internal/presets"
+	"github.com/kishininfosec/infra-gen/infra-gen/pkg/types"
 	"github.com/spf13/cobra"
-	"github.com/infra-gen/infra-gen/internal/generators/ansible"
-	"github.com/infra-gen/infra-gen/internal/generators/docker"
-	"github.com/infra-gen/infra-gen/internal/generators/terraform"
-	"github.com/infra-gen/infra-gen/internal/presets"
-	"github.com/infra-gen/infra-gen/pkg/types"
 )
 
 // generateCmd represents the generate command
@@ -24,7 +24,7 @@ based on the current project configuration. Use 'all' to generate all targets.`,
 		configFile, _ := cmd.Flags().GetString("config")
 		outputDir, _ := cmd.Flags().GetString("output")
 		target := "all"
-		
+
 		if len(args) > 0 {
 			target = args[0]
 		}
@@ -73,7 +73,7 @@ based on the current project configuration. Use 'all' to generate all targets.`,
 
 		for _, t := range targets {
 			var generator types.Generator
-			
+
 			switch t {
 			case types.TargetDocker:
 				generator = docker.NewGenerator()
@@ -92,7 +92,7 @@ based on the current project configuration. Use 'all' to generate all targets.`,
 			// Write files
 			for _, file := range files {
 				filePath := filepath.Join(outputDir, file.Path)
-				
+
 				// Create directory if needed
 				dir := filepath.Dir(filePath)
 				if dir != "." {

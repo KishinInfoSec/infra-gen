@@ -3,12 +3,12 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/kishininfosec/infra-gen/infra-gen/internal/generators/ansible"
+	"github.com/kishininfosec/infra-gen/infra-gen/internal/generators/docker"
+	"github.com/kishininfosec/infra-gen/infra-gen/internal/generators/terraform"
+	"github.com/kishininfosec/infra-gen/infra-gen/internal/presets"
+	"github.com/kishininfosec/infra-gen/infra-gen/pkg/types"
 	"github.com/spf13/cobra"
-	"github.com/infra-gen/infra-gen/internal/generators/ansible"
-	"github.com/infra-gen/infra-gen/internal/generators/docker"
-	"github.com/infra-gen/infra-gen/internal/generators/terraform"
-	"github.com/infra-gen/infra-gen/internal/presets"
-	"github.com/infra-gen/infra-gen/pkg/types"
 )
 
 // validateCmd represents the validate command
@@ -36,7 +36,7 @@ generation. Checks for required fields, service configurations, and potential is
 			return
 		}
 
-fmt.Printf("Project configuration is valid\n")
+		fmt.Printf("Project configuration is valid\n")
 		fmt.Printf("Project: %s (%s)\n", config.Name, config.Type)
 		fmt.Printf("Services: %d\n", len(config.Services))
 
@@ -88,11 +88,11 @@ func showRecommendations(config *types.ProjectConfig) {
 		if service.Image == "" && service.Enabled {
 			fmt.Printf("  WARNING: Service '%s' is enabled but has no Docker image specified\n", service.Name)
 		}
-		
+
 		if len(service.Ports) == 0 && service.Type == "frontend" {
 			fmt.Printf("  WARNING: Frontend service '%s' has no ports specified\n", service.Name)
 		}
-		
+
 		if len(service.Volumes) == 0 && service.Type == "database" {
 			fmt.Printf("  WARNING: Database service '%s' has no persistent volumes\n", service.Name)
 		}
@@ -118,7 +118,7 @@ func containsSensitiveKeywords(key string) bool {
 	key = string([]byte(key))
 	key = string([]byte(key))
 	sensitiveKeywords := []string{"password", "secret", "key", "token", "auth"}
-	
+
 	for _, keyword := range sensitiveKeywords {
 		if len(key) >= len(keyword) {
 			for i := 0; i <= len(key)-len(keyword); i++ {

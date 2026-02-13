@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/infra-gen/infra-gen/pkg/types"
+	"github.com/kishininfosec/infra-gen/infra-gen/pkg/types"
 )
 
 // Generator implements Docker Compose generation
@@ -88,7 +88,7 @@ func (g *Generator) Validate(config *types.ProjectConfig) error {
 // generateComposeYAML generates the YAML content for docker-compose.yml
 func (g *Generator) generateComposeYAML(config *types.ProjectConfig) (string, error) {
 	var builder strings.Builder
-	
+
 	builder.WriteString("services:\n")
 
 	// Generate services
@@ -190,8 +190,6 @@ func (g *Generator) generateComposeYAML(config *types.ProjectConfig) (string, er
 
 	return builder.String(), nil
 }
-
-
 
 // generateEnvFile generates .env file content
 func (g *Generator) generateEnvFile(config *types.ProjectConfig) string {
