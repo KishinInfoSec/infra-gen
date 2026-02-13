@@ -88,8 +88,7 @@ func (g *Generator) Validate(config *types.ProjectConfig) error {
 // generateComposeYAML generates the YAML content for docker-compose.yml
 func (g *Generator) generateComposeYAML(config *types.ProjectConfig) (string, error) {
 	var builder strings.Builder
-
-	builder.WriteString("version: '3.8'\n\n")
+	
 	builder.WriteString("services:\n")
 
 	// Generate services
